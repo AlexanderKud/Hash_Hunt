@@ -1,5 +1,4 @@
 import ctypes
-import gmpy2
 import platform
 
 if platform.system() == 'Linux':
@@ -15,6 +14,9 @@ secp256k1.scalar_multiplication.restype = None
 
 secp256k1.point_multiplication.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p]
 secp256k1.point_multiplication.restype = None
+
+secp256k1.point_division.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p]
+secp256k1.point_division.restype = None
 
 secp256k1.double_point.argtypes = [ctypes.c_char_p, ctypes.c_char_p]
 secp256k1.double_point.restype = None
@@ -126,11 +128,11 @@ def point_multiplication(p, pk):
     res = bytes(65)
     secp256k1.point_multiplication(p, pvk, res)
     return res
-
+   
 def point_division(p, pk):
-    pvk = gmpy2.invert(pk, N).to_bytes(32, 'big')
+    pvk = (pk % N).to_bytes(32, 'big')
     res = bytes(65)
-    secp256k1.point_multiplication(p, pvk, res)
+    secp256k1.point_division(p, pvk, res)
     return res
 
 def point_to_upub(pBytes):
@@ -234,7 +236,7 @@ def privatekey_to_bech32_address(pk):
     pvk = (pk % N).to_bytes(32, 'big')
     res = bytes(42)
     secp256k1.privatekey_to_bech32_address(pvk, res)
-    return res.rstrip(b'\x00').decode('utf-8')
+    return res.decode('utf-8')
 
 def publickey_to_bech32_address(p):
     res = bytes(42)
@@ -284,4 +286,10 @@ def bloom_add(index, item):
 
 def bloom_check(index, item):
     if type(item) != bytes: item = str(item).encode('utf-8')
+    return secp256k1.bloom_check(index, item, len(item))
+
+def bloom_add_bytes(index, item):
+    secp256k1.bloom_add(index, item, len(item))
+
+def bloom_check_bytes(index, item):
     return secp256k1.bloom_check(index, item, len(item))
