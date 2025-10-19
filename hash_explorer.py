@@ -24,10 +24,10 @@ for i in  range(LOWER_BOUND):
     P = secp256k1.scalar_multiplication(pk)
     hash160 = secp256k1.publickey_to_hash160(0, True, P)
     if hash160 == TARGET_HASH160:
-        print(f'[AWESOME] Found full match: {pk} {hash160}')
+        print(f'[AWESOME] Full match: {pk} {hash160}')
         matches += 1
     elif hash160[:slice_count] == hash_slice:
-        print(f'Found partial match: {pk} {hash160}')
+        print(f'Hash slice match: {pk} {hash160}')
         matches += 1
     P = secp256k1.add_points(P, G)
     pk += 1
