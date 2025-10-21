@@ -109,9 +109,7 @@ auto main() -> int {
             while (!batch_count.IsZero()) {
 
                 priv.Set(&start);
-                //priv_keys.clear();
                 for (int i = 0; i < POINTS_BATCH_SIZE; i++) {
-                    //priv_keys.push_back(priv);
                     priv_keys[i] = priv;
                     priv.AddOne();
                 }
