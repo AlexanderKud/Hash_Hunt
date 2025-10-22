@@ -88,8 +88,10 @@ auto main() -> int {
         
         auto process_range = [&](int ThreadId, Int start_point, Int batch_count, Int batchSize) {
             
-            Int start;
+            Int start, batch_num;
             start.Set(&start_point);
+            batch_num.Set(&batch_count);
+
             unsigned char hash160[20];
             string ripemd160;
 
@@ -102,16 +104,15 @@ auto main() -> int {
                       
             Point startPoint = secp256k1->ComputePublicKey(&start);
             startPoint = secp256k1->SubtractPoints(startPoint, secp256k1->G);
+            
             Point P;
             Int priv_keys[POINTS_BATCH_SIZE];
             Int priv;
             
-            while (!batch_count.IsZero()) {
+            while (!batch_num.IsZero()) {
 
                 priv.Set(&start);
-                //priv_keys.clear();
                 for (int i = 0; i < POINTS_BATCH_SIZE; i++) {
-                    //priv_keys.push_back(priv);
                     priv_keys[i] = priv;
                     priv.AddOne();
                 }
@@ -159,7 +160,7 @@ auto main() -> int {
                 
                 startPoint.x.Set(&pointBatchX[POINTS_BATCH_SIZE - 1]);
                 startPoint.y.Set(&pointBatchY[POINTS_BATCH_SIZE - 1]);
-                nbBatch.SubOne();
+                batch_num.SubOne();
                 start.Add(&batchSize);
             }
             
