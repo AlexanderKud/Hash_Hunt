@@ -4,11 +4,11 @@ import multiprocessing as mp
 import random
 import os
 
-def lcg(current_seed, mod):
-    big_m = mod
-    big_a = 0x7c3c3267d015ceb5
-    big_b = 0x24bd2d95276253a9
-    current_seed = (current_seed * big_a + big_b) % big_m
+def lcg(seed, mod):
+    m = mod
+    a = 1025
+    c = 3
+    current_seed = (seed * a + c) % m
     return current_seed
 
 
